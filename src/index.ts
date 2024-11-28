@@ -59,11 +59,21 @@ app.post("/generate-qr", async (req: Request, res: Response) => {
 
 app.get("/interAB", async (req: Request, res: Response) => {
   const { serviceName, bookingId, eventId, venues } = req.query;
+  const gg = JSON.parse(venues as any);
+  console.log(gg, "interab");
+  const ahaha = gg.map((el: any) => {
+    if (!el.price) {
+      return { ...el, price: 0, quantity: 0 };
+    }
+    return el;
+  });
+  console.log(ahaha, "ahahaahahaahaha");
+
   const variables = {
     input: {
       _id: bookingId,
       eventId,
-      venues: JSON.parse(venues as any),
+      venues: ahaha,
     },
   };
 
