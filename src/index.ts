@@ -24,13 +24,10 @@ const callGQLQr = async (
   venues: Record<string, string>
 ) => {
   try {
-    const qrCodeDataUrl = await QRCode.toDataURL(
-      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`
-    );
+    const asd = JSON.stringify(venues);
 
-    console.log(
-      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`,
-      "qrCodeDataUrlqrCodeDataUrlqrCodeDataUrl"
+    const qrCodeDataUrl = await QRCode.toDataURL(
+      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${asd}`
     );
 
     return qrCodeDataUrl;
@@ -47,16 +44,18 @@ app.post("/generate-qr", async (req: Request, res: Response) => {
     return;
   }
 
-  console.log(venues, "venuesvenuesvenuesvenues");
-
   const qr = await callGQLQr(serviceName, bookingId, eventId, venues);
   res.status(200).send(qr);
 });
 
 app.get("/interAB", async (req: Request, res: Response) => {
   const { serviceName, bookingId, eventId, venues } = req.query;
+
+  console.log(venues, "venuesvenuesvenues");
+
   const gg = JSON.parse(venues as any);
   console.log(gg, "iggggggggggggggnterab");
+
   const ahaha = gg.map((el: any) => {
     if (!el.price) {
       return { ...el, price: 0, quantity: 0 };
@@ -73,48 +72,50 @@ app.get("/interAB", async (req: Request, res: Response) => {
     },
   };
 
-  const BACKENDS: any = {
-    hotel: {
-      query: `
-      query GetBooks {
-        books {
-          title
-          author
-        }
-      }
-    `,
-      url: "backendUrl",
-    },
+  console.log(variables);
 
-    ticket: {
-      query: `
-      mutation UpdateEventQuantityBooking($input: UpdateEventQuantityInput!) {
-  updateEventQuantityBooking(input: $input) {
-    _id
-  }
-}
-    `,
-      url: "https://concert-ticket-service-prod.vercel.app/api/graphql",
-    },
-  };
+  //   const BACKENDS: any = {
+  //     hotel: {
+  //       query: `
+  //       query GetBooks {
+  //         books {
+  //           title
+  //           author
+  //         }
+  //       }
+  //     `,
+  //       url: "backendUrl",
+  //     },
 
-  try {
-    const result = await axios.post(
-      BACKENDS[serviceName as string].url,
-      { query: BACKENDS[serviceName as string].query, variables },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  //     ticket: {
+  //       query: `
+  //       mutation UpdateEventQuantityBooking($input: UpdateEventQuantityInput!) {
+  //   updateEventQuantityBooking(input: $input) {
+  //     _id
+  //   }
+  // }
+  //     `,
+  //       url: "https://concert-ticket-service-prod.vercel.app/api/graphql",
+  //     },
+  //   };
 
-    console.log(result.data, "resultresultresult");
+  //   try {
+  //     const result = await axios.post(
+  //       BACKENDS[serviceName as string].url,
+  //       { query: BACKENDS[serviceName as string].query, variables },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
 
-    res.status(200).send("Successfully paid ;");
-  } catch (err) {
-    res.status(200).send("Uldegdel chin hursenguei ahahah");
-  }
+  //     console.log(result.data, "resultresultresult");
+
+  //     res.status(200).send("Successfully paid ;");
+  //   } catch (err) {
+  //     res.status(200).send("Uldegdel chin hursenguei ahahah");
+  //   }
 });
 
 app.listen(8000, () => {
