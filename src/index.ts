@@ -25,11 +25,8 @@ const callGQLQr = async (
 ) => {
   try {
     const qrCodeDataUrl = await QRCode.toDataURL(
-      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${JSON.stringify(
-        venues
-      )}`
+      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`
     );
-
     return qrCodeDataUrl;
   } catch (err) {
     console.error("Error generating QR code:", err);
@@ -49,8 +46,14 @@ app.post("/generate-qr", async (req: Request, res: Response) => {
 });
 
 app.get("/interAB", async (req: Request, res: Response) => {
-  const { serviceName, bookingId, eventId, venues } = req.params;
-  const variables = { _id: bookingId, eventId, venues: JSON.parse(venues) };
+  const { serviceName, bookingId, eventId, venues } = req.query;
+  const variables = {
+    input: {
+      _id: bookingId,
+      eventId,
+      venues: JSON.parse(venues as any),
+    },
+  };
 
   const BACKENDS: any = {
     hotel: {
@@ -68,24 +71,26 @@ app.get("/interAB", async (req: Request, res: Response) => {
     ticket: {
       query: `
       mutation UpdateEventQuantityBooking($input: UpdateEventQuantityInput!) {
-        updateEventQuantityBooking(input: $input) {
-          _id
-        }
-      }
+  updateEventQuantityBooking(input: $input) {
+    _id
+  }
+}
     `,
       url: "https://concert-ticket-service-prod.vercel.app/api/graphql",
     },
   };
 
-  await axios.post(
-    BACKENDS[serviceName].url,
-    { query: BACKENDS["hotel"].query, variables },
+  const result = await axios.post(
+    BACKENDS[serviceName as string].url,
+    { query: BACKENDS[serviceName as string].query, variables },
     {
       headers: {
         "Content-Type": "application/json",
       },
     }
   );
+
+  console.log(result.data, "resultresultresult");
 
   res.status(200).send("Successfully paid ;");
 });
