@@ -27,6 +27,16 @@ const callGQLQr = async (
     const qrCodeDataUrl = await QRCode.toDataURL(
       `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`
     );
+
+    const gg = `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${JSON.stringify(
+      venues
+    )}`;
+    console.log(gg, "first");
+
+    console.log(JSON.parse(gg), "second");
+
+    console.log(qrCodeDataUrl, "qrCodeDataUrlqrCodeDataUrlqrCodeDataUrl");
+
     return qrCodeDataUrl;
   } catch (err) {
     console.error("Error generating QR code:", err);
@@ -82,19 +92,23 @@ app.get("/interAB", async (req: Request, res: Response) => {
     },
   };
 
-  const result = await axios.post(
-    BACKENDS[serviceName as string].url,
-    { query: BACKENDS[serviceName as string].query, variables },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  try {
+    const result = await axios.post(
+      BACKENDS[serviceName as string].url,
+      { query: BACKENDS[serviceName as string].query, variables },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  console.log(result.data, "resultresultresult");
+    console.log(result.data, "resultresultresult");
 
-  res.status(200).send("Successfully paid ;");
+    res.status(200).send("Successfully paid ;");
+  } catch (err) {
+    res.status(200).send("Uldegdel chin hursenguei ahahah");
+  }
 });
 
 app.listen(8000, () => {
