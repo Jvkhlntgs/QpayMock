@@ -62,15 +62,17 @@ app.get("/interAB", async (req: Request, res: Response) => {
     }
     return el;
   });
-  console.log(ahaha, "ahahaahahaahaha");
+  console.log(ahaha[0], "ahahaahahaahaha");
 
   const variables = {
     input: {
       _id: bookingId,
       eventId,
-      venues: ahaha,
+      venues: JSON.stringify(ahaha),
     },
   };
+
+  console.log(variables.input.venues, "benenenenenenennenenenene");
 
   const BACKENDS: any = {
     hotel: {
