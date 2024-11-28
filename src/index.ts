@@ -72,50 +72,48 @@ app.get("/interAB", async (req: Request, res: Response) => {
     },
   };
 
-  console.log(variables);
+  const BACKENDS: any = {
+    hotel: {
+      query: `
+        query GetBooks {
+          books {
+            title
+            author
+          }
+        }
+      `,
+      url: "backendUrl",
+    },
 
-  //   const BACKENDS: any = {
-  //     hotel: {
-  //       query: `
-  //       query GetBooks {
-  //         books {
-  //           title
-  //           author
-  //         }
-  //       }
-  //     `,
-  //       url: "backendUrl",
-  //     },
+    ticket: {
+      query: `
+        mutation UpdateEventQuantityBooking($input: UpdateEventQuantityInput!) {
+    updateEventQuantityBooking(input: $input) {
+      _id
+    }
+  }
+      `,
+      url: "https://concert-ticket-service-prod.vercel.app/api/graphql",
+    },
+  };
 
-  //     ticket: {
-  //       query: `
-  //       mutation UpdateEventQuantityBooking($input: UpdateEventQuantityInput!) {
-  //   updateEventQuantityBooking(input: $input) {
-  //     _id
-  //   }
-  // }
-  //     `,
-  //       url: "https://concert-ticket-service-prod.vercel.app/api/graphql",
-  //     },
-  //   };
+  try {
+    const result = await axios.post(
+      BACKENDS[serviceName as string].url,
+      { query: BACKENDS[serviceName as string].query, variables },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  //   try {
-  //     const result = await axios.post(
-  //       BACKENDS[serviceName as string].url,
-  //       { query: BACKENDS[serviceName as string].query, variables },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
+    console.log(result.data, "resultresultresult");
 
-  //     console.log(result.data, "resultresultresult");
-
-  //     res.status(200).send("Successfully paid ;");
-  //   } catch (err) {
-  //     res.status(200).send("Uldegdel chin hursenguei ahahah");
-  //   }
+    res.status(200).send("Successfully paid ;");
+  } catch (err) {
+    res.status(200).send("Uldegdel chin hursenguei ahahah");
+  }
 });
 
 app.listen(8000, () => {
