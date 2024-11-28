@@ -28,14 +28,10 @@ const callGQLQr = async (
       `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`
     );
 
-    const gg = `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${JSON.stringify(
-      venues
-    )}`;
-    console.log(gg, "first");
-
-    console.log(JSON.parse(gg), "second");
-
-    console.log(qrCodeDataUrl, "qrCodeDataUrlqrCodeDataUrlqrCodeDataUrl");
+    console.log(
+      `https://qpaymock.onrender.com/interAB?serviceName=${name}&bookingId=${bookingId}&eventId=${eventId}&venues=${venues}`,
+      "qrCodeDataUrlqrCodeDataUrlqrCodeDataUrl"
+    );
 
     return qrCodeDataUrl;
   } catch (err) {
@@ -60,7 +56,7 @@ app.post("/generate-qr", async (req: Request, res: Response) => {
 app.get("/interAB", async (req: Request, res: Response) => {
   const { serviceName, bookingId, eventId, venues } = req.query;
   const gg = JSON.parse(venues as any);
-  console.log(gg, "interab");
+  console.log(gg, "iggggggggggggggnterab");
   const ahaha = gg.map((el: any) => {
     if (!el.price) {
       return { ...el, price: 0, quantity: 0 };
