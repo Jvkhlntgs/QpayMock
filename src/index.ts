@@ -41,6 +41,8 @@ app.post("/generate-qr", async (req: Request, res: Response) => {
     return;
   }
 
+  console.log(venues, "venuesvenuesvenuesvenues");
+
   const qr = await callGQLQr(serviceName, bookingId, eventId, venues);
   res.status(200).send(qr);
 });
